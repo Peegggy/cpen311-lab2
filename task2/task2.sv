@@ -6,6 +6,7 @@
 `define enableKSA    3'b011;
 `define waitKSA      3'b100;
 
+
 module task2(input logic CLOCK_50, input logic [3:0] KEY, input logic [9:0] SW,
              output logic [6:0] HEX0, output logic [6:0] HEX1, output logic [6:0] HEX2,
              output logic [6:0] HEX3, output logic [6:0] HEX4, output logic [6:0] HEX5,
@@ -17,9 +18,9 @@ assign key = 24'hC33000;
 logic rst_n;
 assign rst_n = KEY[3];
 
-logic enInit, enKSA;
-logic rdyInit, rdyKSA;
-logic wrenInit, wrenKSA;
+logic en;
+logic rdy;
+logic wren;
 
 logic [7:0] wrdataInit, wrdataKSA;
 logic [7:0] addr, addrInit, addrKSA;
@@ -28,49 +29,54 @@ assign addrKSA = 8'b0;
 
 logic [7:0] read_valueInit, read_valueKSA;
 
-logic [2:0] currentstate, nextstate;
+always_comb begin
+    if(rdy) en = 1;
+    else en = 0;
+end
+
+//logic [2:0] currentstate, nextstate;
 
     init i( .clk(CLOCK_50),
             .rst_n(rst_n),
-            .en(enInit),
-            .rdy(rdyInit),
+            .en(en),
+            .rdy(rdy),
             .addr(addrInit),
             .wrdata(wrdataInit),
-            .wren(wrenInit));
+            .wren(wren));
 
-    s_mem s1(.address(addr),
+    s_mem s1(.address(addrInit),
             .clock(CLOCK_50),
             .data(wrdataInit),
-            .wren(wrenInit),
+            .wren(wren),
             .q(read_valueInit));
 
     ksa k(.clk(CLOCK_50),
           .rst_n(rst_n),
-          .en(enKSA),
-          .rdy(rdyKSA),
+          .en(en),
+          .rdy(rdy),
           .key(key),
           .addr(addrKSA), //j
-          .rddata(wrdataInti),  //s[i]
+          .rddata(wrdataInit),  //s[i]
           .wrdata(wrdataKSA), //s[j]
-          .wren(wrenKSA));
+          .wren(wren));
 
-    s_mem s2(.address(addr),
+    s_mem s2(.address(addrInit),
             .clock(CLOCK_50),
-            .data(wrdata_bufferKSA), //s[j]
-            .wren(wrenKSA),
+            .data(wrdataKSA), //s[j]
+            .wren(wren),
             .q(read_valueInit));
 
-    s_mem s(.address(addr),
+    s_mem s(.address(addrKSA),
             .clock(CLOCK_50),
-            .data(wrdata_bufferInit), //s[i]
-            .wren(wrenInit),
+            .data(wrdataInit), //s[i]
+            .wren(wren),
             .q(read_valueKSA));
 
-always_comb begin
+/*always_comb begin
     case(currentstate)
-    `RESET:    nextstate = rdyInit ? `enableInit : `RESET;
+    `RESET:    nextstate = rdy == 1 ? `enableInit : `RESET;
     `enableInit:   nextstate = `waitInit;
-    `waitInit: nextstate = (rdyInit && rdyKSA) ? `enableKSA : `waitInit;
+    `waitInit: nextstate = (rdy == 1 && rdy == 1) ? `enableKSA : `waitInit;
     `enableKSA:    nextstate = `waitKSA;
     `waitKSA:  nextstate = `waitKSA;
     default:   nextstate = `RESET;
@@ -86,12 +92,12 @@ end
 
 always_comb begin
     case(currentstate)
-    `RESET: {enInit, enKSA, wrenInit, wrenKSA} <= 4'b0000;
-    `enableInit: {enInit, enKSA, wrenInit, wrenKSA} <= 4'b1000;
-    `waitInit: {enInit, enKSA, wrenInit, wrenKSA} <= 4'b0010;
-    `enableKSA: {enInit, enKSA, wrenInit, wrenKSA} <= 4'b0100;
-    `waitKSA: {enInit, enKSA, wrenInit, wrenKSA} <= 4'b0001;
-    default: {enInit, enKSA, wrenInit, wrenKSA} <= 4'b0000;
+    `RESET: {en, en, wren, wren} <= 4'b0000;
+    `enableInit: {en, en, wren, wren} <= 4'b1000;
+    `waitInit: {en, en, wren, wren} <= 4'b0010;
+    `enableKSA: {en, en, wren, wren} <= 4'b0100;
+    `waitKSA: {en, en, wren, wren} <= 4'b0001;
+    default: {en, en, wren, wren} <= 4'b0000;
     endcase
 end
 
@@ -102,7 +108,7 @@ always_comb begin
     else begin
         addr <= addrKSA;
     end  
-end
+end*/
 
 
 
