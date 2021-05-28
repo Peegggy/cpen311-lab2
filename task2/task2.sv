@@ -82,36 +82,11 @@ always_ff @(posedge CLOCK_50) begin
 end
 
 always_comb begin
-    case(state)
-    3'b001 : begin
-        addr_final <= addrInit;
-        wrdata_final <= wrdataInit;
-        wren_final <= wrenInit;
-
-    end
-    3'b010 : begin
-        addr_final <= addrKSA;
-        wrdata_final <= wrdataKSA;
-        wren_final <= wrenKSA;
-        read_valueKSA <= read_value;        
-
-    end
-    3'b100 : begin
-        addr_final <= 8'b0;
-        wrdata_final <= 8'b0;
-        wren_final <= 0;
-    end
-    default : begin
-        addr_final <= addr_final;
-        wrdata_final <= wrdata_final;
-        wren_final <= 0;
-        read_valueKSA <= read_value;
-        
-    end
-    endcase
+    addr_final = (state == 3'b001) ? addrInit : ((state == 3'b010) ? addrKSA : 8'b0);
+    wrdata_final = (state == 3'b001) ? wrdataInit : ((state == 3'b010) ? wrdataKSA : 8'b0);
+    wren_final = (state == 3'b001) ? wrenInit : ((state == 3'b010) ? wrenKSA : 0);
+    read_valueKSA = read_value;
 end
-    // your code here
-
 
 
 endmodule: task2
