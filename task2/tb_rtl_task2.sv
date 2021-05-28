@@ -21,7 +21,11 @@ initial begin
     KEY[3] = 0;
     #10;
     KEY[3] = 1;
-    #5130;
+    //#5130;
+    //#200000;
+    #18000;
+    //#30000;
+    //#15415;
     $stop;
 end
 endmodule: tb_rtl_task2
