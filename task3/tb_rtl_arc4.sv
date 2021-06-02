@@ -22,11 +22,15 @@ initial begin
     rst_n = 0;
     #10;
     rst_n = 1;
-    //#5130;
-    //#200000;
-    //#20500;
-    #30000;
-    //#15415;
+    #20;
+    assert(dut.state === 3'b001) //check if init started
+    else $error ("init did not start");
+    #5140;
+    assert(dut.state === 3'b010) //check if ksa started
+    else $error ("KSA did not start");
+    #17950;
+    assert(dut.state === 3'b011) //check if prga started
+    else $error ("PRGA did not start");
     $stop;
 end
 

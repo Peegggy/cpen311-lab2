@@ -23,8 +23,19 @@ initial begin
     KEY[3] = 0;
     #10;
     KEY[3] = 1;
-    #31000;
-   //#27665;
+    #40;
+    assert(dut.a4.state === 4'd1) //check to see if init state started
+    else $error ("not in init state");
+    #5140;
+    assert(dut.a4.state === 4'd2) //check to see if ksa state started
+    else $error ("not in KSA state");
+    #18000;
+    assert(dut.a4.state === 4'd3) //check to see if prga state started
+    else $error ("not in prga state");
+    #6900;
+    assert(dut.a4.state === 4'd4) //check to see if task 3 is done
+    else $error ("not in done state");
+    #20;
     $stop;    
 end
 endmodule: tb_rtl_task3
