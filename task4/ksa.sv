@@ -48,26 +48,26 @@ end
 
 always_ff @(posedge clk) begin
     if(~rst_n) //if reset is pressed
-    currentstate <= 4'd1; //then go back to restart state
+    currentstate = 4'd1; //then go back to restart state
     else begin
-    currentstate <= nextstate; //else nextstate becomes the current state
+    currentstate = nextstate; //else nextstate becomes the current state
     end
 end
 
 always_ff @(posedge clk) begin
     case(currentstate)
     4'd1 : begin //`restart
-        rdy <= 1; //KSA is ready to perform
-        addr <= 8'b0; 
-        wrdata <= 8'b0; 
-        wren <= 0; //not writing anything
-        i <= 0; 
-        j <= 0;
+        rdy = 1; //KSA is ready to perform
+        addr = 8'b0; 
+        wrdata = 8'b0; 
+        wren = 0; //not writing anything
+        i = 0; 
+        j = 0;
     end
     4'd2 : begin //`readi
-        rdy <= 0; //rdy is 0 to indicate that the process has begun
-        addr <= i; //addr = i to get s[i]
-        wren <= 0; //reading s[i]
+        rdy = 0; //rdy is 0 to indicate that the process has begun
+        addr = i; //addr = i to get s[i]
+        wren = 0; //reading s[i]
     end
     4'd3 : begin //`loadi
         //readi = rddata, wait a cycle for the rddata for s[i] to be loaded back
@@ -75,49 +75,49 @@ always_ff @(posedge clk) begin
     4'd4 : begin //`getj
         readi = rddata; //readi is s[i]
         case(i%3) //since key is big endian so we need to flip the order
-        0 : j <= (j + rddata + key[23:16]) % 256; //flipping the byte order
-        1 : j <= (j + rddata + key[15:8]) % 256;
-        2 : j <= (j + rddata + key[7:0]) % 256;
+        0 : j = (j + rddata + key[23:16]) % 256; //flipping the byte order
+        1 : j = (j + rddata + key[15:8]) % 256;
+        2 : j = (j + rddata + key[7:0]) % 256;
         default : j = 8'bx;
         endcase
       
     end
     4'd9 : begin //`readj
-        addr <= j; //needs another cycle to assign j to address or else address would get the old j
-        wren <= 0; //read from j
+        addr = j; //needs another cycle to assign j to address or else address would get the old j
+        wren = 0; //read from j
     end
     4'd5 : begin //loadj
       //  readj = rddata, takes another cycle for rddata to be read to KSA
     end
 
     4'd6 : begin //`switchij
-        rdy <= 0; 
-        addr <= i; //write s[j] to i
-        wrdata <= rddata; //since nothing else is read between the loadj state and switchij state
-        wren <= 1; // so rddata still holds the last read value which is s[j]
+        rdy = 0; 
+        addr = i; //write s[j] to i
+        wrdata = rddata; //since nothing else is read between the loadj state and switchij state
+        wren = 1; // so rddata still holds the last read value which is s[j]
 
     end
 
     4'd7 : begin //switchji
-        rdy <= 0;
-        addr <= j; //write s[i] to j
-        wrdata <= readi; 
-        wren <= 1;
+        rdy = 0;
+        addr = j; //write s[i] to j
+        wrdata = readi; 
+        wren = 1;
         i += 1'b1; //increments i
     end
     4'd8 : begin //`done
-        rdy <= 1; //rdy is 1 indicates the module is done
-        addr <= 8'b0; //everything gets set back to 0
-        wrdata <= 8'b0;
-        wren <= 0;
-        j <= 0;
+        rdy = 1; //rdy is 1 indicates the module is done
+        addr = 8'b0; //everything gets set back to 0
+        wrdata = 8'b0;
+        wren = 0;
+        j = 0;
     end
     default: begin  
-        rdy <= 0; 
-        addr <= 8'b0;
-        wrdata <= 8'b0;
-        wren <= 0;
-        j <= 0;
+        rdy = 0; 
+        addr = 8'b0;
+        wrdata = 8'b0;
+        wren = 0;
+        j = 0;
     end
     endcase
 end

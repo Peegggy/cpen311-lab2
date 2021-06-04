@@ -1,3 +1,4 @@
+  
 `define reset       3'd0; //to reset the process
 `define processInit 3'd1; //to process init module
 `define processKSA  3'd2; //to process KSA module
