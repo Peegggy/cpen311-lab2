@@ -73,7 +73,7 @@ always_ff @(posedge clk) begin
         //readi = rddata, wait a cycle for the rddata for s[i] to be loaded back
     end
     4'd4 : begin //`getj
-        readi <= rddata; //readi is s[i]
+        readi = rddata; //readi is s[i]
         case(i%3) //since key is big endian so we need to flip the order
         0 : j <= (j + rddata + key[23:16]) % 256; //flipping the byte order
         1 : j <= (j + rddata + key[15:8]) % 256;

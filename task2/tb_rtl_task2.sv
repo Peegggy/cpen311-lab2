@@ -6,7 +6,7 @@ logic CLOCK_50;
 logic [3:0] KEY;
 logic [9:0] SW, LEDR;
 logic [6:0] HEX0,  HEX1,  HEX2, HEX3, HEX4, HEX5;
-
+logic [23:0] key;
 
 task2 dut(.*);
 
@@ -16,7 +16,7 @@ initial begin
 end
 
 initial begin
-    dut.key = 24'h00033C;
+    //key = 24'h00033C;
     KEY[3] = 1;
     #10;
     KEY[3] = 0;
@@ -29,6 +29,8 @@ initial begin
     assert(dut.state === 3'b010) //check to see if it goes to processKSA state after init is done
     else $error ("processKSA did not state");
     #25000;
+    assert(dut.s.altsyncram_component.m_default.altsyncram_inst.mem_data[0] === 8'hb4)
+    else $error ("first value is wrong");
 
     $stop;
 end

@@ -18,7 +18,7 @@ always_ff @(posedge clk) begin
     else begin
         case(state)
         3'd1 : state <= (en && rdy) ? 3'd2 : 3'd1; //see if the module is ready and enabled
-        3'd2 : state <= (addr == 8'd255) ? 3'd4 : 3'd3; //writes the value to the address
+        3'd2 : state <= (addr === 8'd255) ? 3'd4 : 3'd3; //writes the value to the address
         3'd3 : state <= 3'd2; //repeats until address is at 255
         default : state <= 3'd4; //does nothing state
         endcase
@@ -39,7 +39,7 @@ always_ff @(posedge clk) begin
     3'd3 : begin //increAddr state
         wren <= 0; //wren is 0 because we do not want to write to the memory
         rdy <= 0; //rdy = 0 because the module is still processing
-        addr ++; //address get incremented by 1
+        addr <= addr + 8'd1; //address get incremented by 1
     end
     3'd4 : begin //done state
         wren <= 0; //wren is 0 because we do not want to write to the memory

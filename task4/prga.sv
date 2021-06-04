@@ -25,6 +25,7 @@ for k = 1 to message_length:
     j = (j+s[i]) mod 256
     swap values of s[i] and s[j]
     pad[k] = s[(s[i]+s[j]) mod 256]
+
 plaintext[0] = message_length
 for k = 1 to message_length:
     plaintext[k] = pad[k] xor ciphertext[k]  -- xor each byte */

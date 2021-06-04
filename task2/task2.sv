@@ -13,7 +13,7 @@ module task2(input logic CLOCK_50, input logic [3:0] KEY, input logic [9:0] SW,
 
 logic [23:0] key;
 //assign key = {14'b0, SW};
-
+assign key = 24'h00033C;
 
 logic rst_n;
 assign rst_n = KEY[3];//the reset button is KEY[3]

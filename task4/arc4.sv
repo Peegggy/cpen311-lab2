@@ -96,7 +96,7 @@ always_ff @(posedge clk) begin
         //if rdy and enable are both on, then it means the module is ready to perform
         3'd0 : state <= (rdy && en) ? 3'd1 : 3'd0; 
         //to indicate that init has finished, wrenInit has to be off, rdyInit is on and address is at 255
-        3'd1 : state <= (~wrenInit && rdyInit && addrInit === 8'd255) ? 3'd2 : 3'd1;
+        3'd1 : state <= (~wrenInit && rdyInit && addrInit == 8'd255) ? 3'd2 : 3'd1;
         //to indicate that KSA has finished, rdyKSA is on, wrenKSA is off and the last rddata should not be 255
         3'd2 : state <= (rdyKSA && ~wrenKSA && read_valueKSA !== 8'd255) ? 3'd3 : 3'd2;
         //to indicate that prga is done, enPRGA, rdyPRGA and pt_wren should all be on

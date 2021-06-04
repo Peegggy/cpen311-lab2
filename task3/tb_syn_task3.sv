@@ -1,3 +1,4 @@
+`timescale 1ps / 1ps
 module tb_syn_task3();
 
 // Your testbench goes here.
@@ -8,7 +9,7 @@ logic [9:0] SW, LEDR;
 logic [6:0] HEX0,  HEX1,  HEX2, HEX3, HEX4, HEX5;
 
 task3 dut(.*);
-initial $readmemh("test2.memh", tb_rtl_task3.dut.ct.altsyncram_component.m_default.altsyncram_inst.mem_data);
+initial $readmemh("test2.memh", dut.\ct|altsyncram_component|auto_generated|altsyncram1|ram_block3a0 .ram_core0.ram_core0.mem);
 initial begin
     CLOCK_50 = 0;
     forever #5 CLOCK_50 = ~CLOCK_50;
